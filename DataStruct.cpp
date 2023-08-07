@@ -1,77 +1,90 @@
 ﻿#include <iostream>
 
-#pragma region 하노이의 탑
-// 1. 큰 원반이 아래, 작은 원반이 위로 가게해서
-// 원반을 3개의 기둥 사이에 옮기는 것입니다.
-// 2. 원반은 1번에 1개씩만 옮길 수 있고, 모든 원반은
-// 크기가 다르며, 큰 원반이 작은 원반 위로 가서는 안됩니다.
-// 3. 최소한의 이동으로 목표 기둥으로 옮겨야 합니다.
+#pragma region 원형 연결 리스트
+// 단순 연결 리스트에서 마지막 노드가
+// 리스트의 첫 번째 노드를 가리키는 리스트 구조를
+// 원형으로 만든 리스트입니다.
 
-void Hanoi(int n, char A, char B, char C) {
-	if (n <= 1) {
-		std::cout << A << "->" << C << std::endl;
-		return;
-	}
-	else {
-		Hanoi(n - 1, A, C, B);
-		std::cout << A << "->" << C << std::endl;
-		Hanoi(n - 1, B, A, C);
+struct Node {
+	int data;
+	Node* next;
+};
+
+
+class CircleLinkedList {
+private:
+	int count;
+
+public:
+	CircleLinkedList() : count(0) { };
+
+	Node* CreateNode(int data) {
+		Node* newNode = new Node;
+		newNode->data = data;
+		newNode->next = nullptr;
+		return newNode;
 	}
 
-	//A C;
-	//A B;
-	//C B;
-	//A C;
-	//B A;
-	//B C;
-	//A C;
-}
+	Node* Push_Front(Node* head, int data) {
+		if (head == nullptr) {
+			head = CreateNode(data);
+			head->next = head;
+		}
+		else {
+			Node* temp = CreateNode(data);
+			temp->next = head->next;
+			head->next = temp;
+		}
+		count++;
+		return head;
+	}
+
+	Node* Push_Back(Node* head, int data) {
+		if (head == nullptr) {
+			head = CreateNode(data);
+			head->next = head;
+		}
+		else {
+			Node* temp = CreateNode(data);
+			temp->next = head->next;
+			head->next = temp;
+
+			head = temp;
+		}
+		count++;
+		return head;
+	}
+
+	void Information(Node* head) {
+		Node* temp = head->next;
+
+		while (temp != head) {
+			std::cout << temp->data << std::endl;
+			temp = temp->next;
+		}
+		std::cout << temp->data << std::endl;
+	}
+
+	int Size() {
+		return count;
+	}
+};
 
 #pragma endregion
-
-class A {
-public:
-	void Print() {
-		std::cout << "A class" << std::endl;
-	}
-
-	virtual A* GetThis() {
-		return this;
-	}
-};
-
-class B : public A {
-public:
-	void Print() {
-		std::cout << "B class" << std::endl;
-	}
-
-	virtual B* GetThis() {
-		return this;
-	}
-};
 
 int main() {
+	Node* head = nullptr;
 
-#pragma region 하노이의 탑
-	//int num = 0;
-	//std::cin >> num;
-	//
-	//Hanoi(num, 'A', 'B', 'C');
-#pragma endregion
+	CircleLinkedList circleLinkedList;
 
-#pragma region 공변 반환값
-	A aClass;
-	B bClass;
+	head = circleLinkedList.Push_Front(head, 20);
+	head = circleLinkedList.Push_Front(head, 10);
+	head = circleLinkedList.Push_Back(head, 30);
+	
+	circleLinkedList.Information(head);
+	
 
-	A& ref = bClass;
-	bClass.GetThis()->Print();
-	ref.GetThis()->Print();
-
-	std::cout << typeid(bClass.GetThis()).name() << std::endl;
-	std::cout << typeid(ref.GetThis()).name() << std::endl;
-#pragma endregion
-
+	std::cout << circleLinkedList.Size() << std::endl;
 
 	return 0;
 }
